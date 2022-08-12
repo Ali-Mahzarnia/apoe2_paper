@@ -1,0 +1,10 @@
+Analysis of Variance Table
+
+Response: NormSWDist
+           Df  Sum Sq  Mean Sq F value  Pr(>F)  
+agecat      1 0.10910 0.109097  5.9512 0.01962 *
+Sex         1 0.03975 0.039754  2.1686 0.14931  
+agecat:Sex  1 0.01359 0.013590  0.7413 0.39479  
+Residuals  37 0.67828 0.018332                  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
