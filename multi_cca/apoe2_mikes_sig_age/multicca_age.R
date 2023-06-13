@@ -1,10 +1,14 @@
 library(dplyr)
+library(dplyr)
+load("connectivity.rda")
+load("response.rda")
+load("RNA_data.rda")
 
-noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
+#noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
 
 
-temp=connectivity[-noreadcsf,-noreadcsf,1]
-#temp=connectivity[,,1]
+#temp=connectivity[-noreadcsf,-noreadcsf,1]
+temp=connectivity[,,1]
 indexlower=lower.tri(temp, diag=FALSE)
 indexlowertrue=which(indexlower==TRUE)
 temp=temp[indexlower]
@@ -59,7 +63,7 @@ class(RNA_data)
 
 
 ########filter data by mike's significance
-mike_path='/Users/ali/Desktop/Jul/rna/apoe_mice/apoe2_mikes_sig_age/mikes_age.csv'
+mike_path='/Users/ali/Desktop/Jun23/apoe2_paper/divide_by_sum/multi_cca/apoe2_mikes_sig_age/mikes_age.csv'
 mikes=read.csv(mike_path) #already sorted by fdr pvalue
 mike_names=mikes$Gene.Symbol
 mike_names_significant=mike_names[mikes$fdr_p<=0.05]
@@ -92,7 +96,7 @@ if (length(inddz)>1){
 }
 
 
-temp=connectivity[-noreadcsf,-noreadcsf,1]
+#temp=connectivity[-noreadcsf,-noreadcsf,1]
 temp=connectivity[,,1]
 indexlower=lower.tri(temp, diag=FALSE)
 indexlowertrue=which(indexlower==TRUE)
@@ -102,7 +106,7 @@ len=sum(indexlower)
 image=matrix(NA,  dim(connectivity)[3], len) # -6 becasue of cfs removal
 
 for (i in 1:dim(connectivity)[3]){
-  temp=connectivity[-noreadcsf,-noreadcsf,i]
+  #temp=connectivity[-noreadcsf,-noreadcsf,i]
   temp=connectivity[,,i]
   indexlower=lower.tri(temp, diag=FALSE)
   temp=temp[indexlower]
@@ -133,7 +137,7 @@ if (length(indd)>1){
 ## Not run:
 #install.packages("PMA")
 #install.packages("https://gitlab.oit.duke.edu/am983/PMA2/-/archive/master/PMA2-master.tar.gz", repos = NULL, type="source")
-library(PMA2)
+library(PMA)
 xlist= list (riskfactors, image, RNA_data)
 #perm.out <- MultiCCA.permute(xlist, nperm=100)
 
@@ -224,7 +228,7 @@ out$penalty
 ws=out$ws
 mean(ws[[3]]==0)
 sum(out$ws[[3]]!=0)
-
+ws[[1]]
 
 #perm.out2 <- MultiCCA.permute(xlist, nperm=500, penalties = as.matrix(penalty) )
 
@@ -240,11 +244,11 @@ RNA_result_ordered=RNA_result[order(abs(as.numeric(RNA_result$V2)), decreasing=T
 
 
 ##### add log2....number from mikes excel sheet
-mikes_path='/Users/ali/Desktop/Jul/apoe2_paper/multi_cca/apoe2_mikes_sig_sex/mikes.csv'
+mikes_path='/Users/ali/Desktop/Jun23/apoe2_paper/divide_by_sum/multi_cca/apoe2_mikes_sig_sex/mikes.csv'
 mikes=read.csv(mikes_path)
 
 
-Ens_to_sym=read.delim('/Users/ali/Desktop/Jul/apoe2_paper/multi_cca/apoe2_mikes_sig_age/mikes_age.csv',sep="\t", header = T)
+Ens_to_sym=read.delim('/Users/ali/Desktop/Jun23/apoe2_paper/divide_by_sum/multi_cca/apoe2_mikes_sig_sex/micewithsymbol.txt',sep="\t", header = T)
 Ens_to_sym=t(Ens_to_sym)
 
 
@@ -265,7 +269,7 @@ for (ii in 1:dim(RNA_result_ordered)[1]) {
 RNA_result_ordered$log2FC=log2FC_result
 
 
-
+library(xlsx)
 write.xlsx2(RNA_result_ordered, "RNA_result_ordered.xlsx" )
 
 
@@ -297,7 +301,8 @@ indexlowertrue=which(indexlower==TRUE)
 temp[indd]
 indexlowertrue[indd]
 
-connectivityexample=connectivity[-noreadcsf,-noreadcsf,1]
+#connectivityexample=connectivity[-noreadcsf,-noreadcsf,1]
+connectivityexample=connectivity[,,1]
 
 connectivityexample[indexlowertrue[indd]] ##yes the're them
 connectivityexample[indexlowertrue[indd]]="zeros" # lest make them known for a special word
@@ -315,7 +320,8 @@ indexofzeros
 #results of connectivities that matter:
 nonzeroindex=which(uout!=0)
 
-connectivityexample=connectivity[-noreadcsf,-noreadcsf,1]
+#connectivityexample=connectivity[-noreadcsf,-noreadcsf,1]
+connectivityexample=connectivity[,,1]
 connectivityexample[]=0
 connectivitvals=connectivityexample
 nonzerouout=uout[uout!=0]
@@ -339,15 +345,15 @@ minC[1] <- maxC[1] <- 0
 l <- layout_with_fr(t.graph, minx=minC, maxx=maxC,
                     miny=minC, maxy=maxC)      
 
-pathnames='/Users/ali/Desktop/Jul/apoe/mouse_anatomy.csv'
+pathnames='/Users/ali/Desktop/Jun23/apoe2_paper/divide_by_sum/mouse_anatomy.csv'
 datanmes=read.csv(pathnames, header = TRUE, sep = ",", quote = "")
 datanmes$ROI
 
-noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
+#noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
 
 #datanmes=datanmes[-noreadcsf]
 
-datanmess=datanmes$ROI[-noreadcsf] # remove csf
+datanmess=datanmes$ROI#[-noreadcsf] # remove csf
 #datanmess=datanmes$ROI
 
 
@@ -391,7 +397,7 @@ subnetsresults=vector(mode = "list", length = length(subnets))
 colsumabs=colSums(abs(connectivitvals))
 colsum=colSums(connectivitvals)
 
-leftright=datanmes$Bigpart[-noreadcsf]
+leftright=datanmes$Bigpart#[-noreadcsf]
 
 
 
@@ -422,6 +428,15 @@ for (i in 1:length(subnets)) {
   }
   subnetsresults[[i]]=net 
 }
+
+####################
+subnetsresults_sorted = vector(mode = "list", length = length(subnets))
+sorted_weights = matrix(NA, 1, length(subnetsresults))
+for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[6,1]))   }
+index_of_nets = order(sorted_weights, decreasing = T)
+for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults [[index_of_nets[i]]]}
+subnetsresults = subnetsresults_sorted
+
 
 ##############new net
 
@@ -478,7 +493,13 @@ for (i in 1:length(subnets)) {
 }
 
 
-
+####################
+subnetsresults_sorted = vector(mode = "list", length = length(subnets))
+sorted_weights = matrix(NA, 1, length(subnetsresults))
+for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[6,1]))   }
+index_of_nets = order(sorted_weights, decreasing = T)
+for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults [[index_of_nets[i]]]}
+subnetsresults = subnetsresults_sorted
 
 
 for (i in 1:length(subnets)) {
@@ -503,7 +524,13 @@ for (i in 1:length(subnets)) {
   subnetsresults[[i]]=net 
 }
 
-
+####################
+subnetsresults_sorted = vector(mode = "list", length = length(subnets))
+sorted_weights = matrix(NA, 1, length(subnetsresults))
+for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[6,1]))   }
+index_of_nets = order(sorted_weights, decreasing = T)
+for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults [[index_of_nets[i]]]}
+subnetsresults = subnetsresults_sorted
 
 #for (i in 1:length(subnetsresults)) {
 #  net=subnetsresults[i]
@@ -573,18 +600,19 @@ for (j in 1:length(subnetsresults)){
   for (i in 1:dim(t)[1]){
     if ( t[i,][1]%in%subnetsuperset){
       for (k in 1:dim(connectivity)[3]) {
-        temp=connectivity[-noreadcsf,-noreadcsf,k]
+        #temp=connectivity[-noreadcsf,-noreadcsf,k]
+        temp=connectivity[,,k]
         histdata[j,k]=histdata[j,k]+ temp[t[i,][1],t[i,][2]]+temp[t[i,][2],t[i,][1]]
       }
     }
   }
 }
-histdata=cbind(seq(1,length(subnetsresults)),histdata)
+#histdata=10000*cbind(seq(1,length(subnetsresults)),histdata)
 
 
 
 ##split plots.
-histdatasplit=histdata[,2:dim(histdata)[2]]
+histdatasplit=histdata#[,2:dim(histdata)[2]]
 #uniqgeneafterreg=unique(riskfactors[,5])
 apoe2=histdatasplit[,riskfactors[,5]>2] 
 apoe3=histdatasplit[,riskfactors[,5]==3]
@@ -631,7 +659,7 @@ if (sqrt>4) sqrt=3
 par(mfrow = c(ceiling(sqrt), ceiling(length(subnetsresults)/sqrt)))
 for (j in 1:length(subnetsresults)){
   #cols <- brewer.pal(8,'Set2')[6:8]
-  cols=c('chartreuse1','blueviolet' )
+  cols=c('chartreuse3','blueviolet' )
   colsorig=adjustcolor(cols, alpha.f = 0.5)
   # cols[length(unique(xaxisvar))]=rgb(1,0,0,)
   cols=adjustcolor(cols, alpha.f = 0.25)
@@ -648,11 +676,11 @@ for (j in 1:length(subnetsresults)){
   #mtext(paste("R",a, collapse=', '), side=4, cex=0.5)
   
   for (l in 1:length(sort(unique(brightnessvar), decreasing=T))) {
-    cols=c('chartreuse1','blueviolet' )
+    cols=c('chartreuse3','blueviolet' )
     cols[length(unique(xaxisvar))]=rgb(1,0,0,)
     tempnum=length(sort(unique(brightnessvar), decreasing=T))
     #cols=adjustcolor(cols, alpha.f = l/length(sort(unique(brightnessvar), decreasing=T)))
-    cols=c('chartreuse1','blueviolet' )
+    cols=c('chartreuse3','blueviolet' )
     stripchart(histdatasplit[j,brightnessvar==sort(unique(brightnessvar), decreasing=T)[l]]~xaxisvar[brightnessvar==sort(unique(brightnessvar), decreasing=T)[l]], vertical = TRUE, method = "jitter", points=50,
                pch = (17:length(sort(unique(brightnessvar), decreasing=T))), add = TRUE, col =cols , offset=0, cex = 1.2)
     cat(sort(unique(brightnessvar), decreasing=T)[l],"  "  ,l/length(unique(brightnessvar, "\n") )  )
@@ -670,7 +698,7 @@ dev.off()
 
 
 #####3 only some violin 
-c=c(1,4,5,8,10,14)
+c=c(3,4,13,14,10,15)
 
 jpeg("violin_selected.jpeg", units="in", width=20, height=10, res=300)  
 
@@ -723,18 +751,18 @@ library('igraph');
 #connectivitvalsones=connectivitvals
 t=which(connectivitvalsones!=0, arr.ind=TRUE)
 
-for (i in 1:(dim(t)[1]*dim(t)[2])) {
-  for (j in noreadcsf) {
-    if (j <= t[i]) {
-      t[i] = t[i] + 1
-    }
-  }
-  #t[i] = t[i] - 1
-}
+#for (i in 1:(dim(t)[1]*dim(t)[2])) {
+#  for (j in noreadcsf) {
+#    if (j <= t[i]) {
+#      t[i] = t[i] + 1
+#    }
+#  }
+#  #t[i] = t[i] - 1
+#}
 
 t <- cbind(t, connectivitvals[which(connectivitvals!=0,arr.ind=TRUE)]) 
 t.graph=graph.data.frame(t,directed=F)
-E(t.graph)$color <- ifelse(E(t.graph)$V3 > 0,'blue','red') 
+E(t.graph)$color <- ifelse(E(t.graph)$V3 > 0,'red','blue') 
 #t.names <- colnames(cor.matrix)[as.numeric(V(t.graph)$name)]
 minC <- rep(-Inf, vcount(t.graph))
 maxC <- rep(Inf, vcount(t.graph))
@@ -742,15 +770,15 @@ minC[1] <- maxC[1] <- 0
 l <- layout_with_fr(t.graph, minx=minC, maxx=maxC,
                     miny=minC, maxy=maxC)      
 
-pathnames='/Users/ali/Desktop/Jul/apoe/mouse_anatomy.csv'
+pathnames='/Users/ali/Desktop/Jun23/apoe2_paper/divide_by_sum/mouse_anatomy.csv'
 datanmes=read.csv(pathnames, header = TRUE, sep = ",", quote = "")
 datanmes$ROI
 
-noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
+#noreadcsf=c(148,152,161,314,318,327) # dont read csf already in matlab
 
 #datanmes=datanmes[-noreadcsf]
 
-datanmess=datanmes$ROI[-noreadcsf] # remove csf
+datanmess=datanmes$ROI#[-noreadcsf] # remove csf
 #datanmess=datanmes$ROI
 
 
