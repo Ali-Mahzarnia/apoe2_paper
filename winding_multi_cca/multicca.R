@@ -94,9 +94,12 @@ dim(image)
 
 
 
+###### take out weak signal 
+connectivity_vec = as.vector(connectivity[connectivity>0])
+cut_off_means= quantile(unique(connectivity_vec), 0.02) 
 
 indd=0
-for (i in 1:dim(image)[2]) if(sd(image[,i])==0 ) {indd=rbind(indd,i);  cat ( i , sd(image[,i]), "\n" );}
+for (i in 1:dim(image)[2]) if(sd(image[,i])==0 | mean(image[,i])<cut_off_means ) {indd=rbind(indd,i);  cat ( i , sd(image[,i]) ,"\n" );}
 if (length(indd)>1){
   indd=indd[2:dim(indd)[1]]
   image=image[,-indd] }
@@ -204,7 +207,7 @@ out$penalty
 ws=out$ws
 mean(ws[[1]]==0)
 sum(out$ws[[3]]!=0)
-ws[[1]]
+ws[[3]]
 
 #perm.out2 <- MultiCCA.permute(xlist, nperm=500, penalties = as.matrix(penalty) )
 
@@ -374,7 +377,7 @@ for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults
 subnetsresults = subnetsresults_sorted
 ##############new net
 
-net_new=matrix(NA, length(subnetsresults),4)
+net_new=matrix(NA, length(subnetsresults),5)
 
 
 for (j in 1:dim(net_new)[1]) {
@@ -383,9 +386,10 @@ for (j in 1:dim(net_new)[1]) {
   net_new[j,2]= paste(temps[8,], collapse = ", ")
   net_new[j,3] = paste(paste(temps[5,],temps[2,]), collapse = ", ")
   net_new[j,4] = paste(temps[7,1])
+  net_new[j,5] = paste(abs(as.numeric(temps[6,1])))
   
 }
-colnames(net_new)=c("Sub-Network", "Region Number", "Region Name", "Sub-Network Weight")
+colnames(net_new)=c("Sub-Network", "Region Number", "Region Name", "Sub-Network Weight", "Sub-Network abs Weight")
 
 
 #install.packages("xlsx")
@@ -410,8 +414,8 @@ for (i in 1:length(subnets)) {
   net=matrix(NA,8,length(temp) )
   net[2,]=datanmess[temp]
   net[1,]=as.numeric(temp)
-  net[3,]= as.numeric( colsumabs[temp]   )
-  net[4,]= as.numeric( colsum[temp]   )
+  net[3,]= as.numeric( colsum[temp]   )
+  net[4,]= as.numeric( colsumabs[temp]   )
   tt=as.numeric(net[1,])
   #tt=c(1,200)
   indofleftright=tt>=164
@@ -429,7 +433,7 @@ for (i in 1:length(subnets)) {
 ####################
 subnetsresults_sorted = vector(mode = "list", length = length(subnets))
 sorted_weights = matrix(NA, 1, length(subnetsresults))
-for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[7,1]))   }
+for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[6,1]))   }
 index_of_nets = order(sorted_weights, decreasing = T)
 for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults [[index_of_nets[i]]]}
 subnetsresults = subnetsresults_sorted
@@ -442,8 +446,8 @@ for (i in 1:length(subnets)) {
   net=matrix(NA,8,length(temp) )
   net[2,]=datanmess[temp]
   net[1,]=as.numeric(temp)
-  net[3,]= as.numeric( colsumabs[temp]   )
-  net[4,]= as.numeric( colsum[temp]   )
+  net[3,]= as.numeric( colsum[temp]   )
+  net[4,]= as.numeric( colsumabs[temp]   )
   tt=as.numeric(net[1,])
   #tt=c(1,200)
   indofleftright=tt>=164
@@ -461,7 +465,7 @@ for (i in 1:length(subnets)) {
 ####################
 subnetsresults_sorted = vector(mode = "list", length = length(subnets))
 sorted_weights = matrix(NA, 1, length(subnetsresults))
-for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[7,1]))   }
+for (i in 1:length(subnetsresults)) {temp =subnetsresults[[i]]; sorted_weights[1,i] = abs(as.numeric(temp[6,1]))   }
 index_of_nets = order(sorted_weights, decreasing = T)
 for (i in 1:length(subnetsresults)) {subnetsresults_sorted[[i]] = subnetsresults [[index_of_nets[i]]]}
 subnetsresults = subnetsresults_sorted
@@ -587,7 +591,7 @@ jpeg("violin_winding_sex.jpeg", units="in", width=20, height=10, res=300)
 
 
 sqrt=sqrt(length(subnetsresults))
-if (sqrt>4) sqrt=4
+if (sqrt>3) sqrt=3
 par(mfrow = c(ceiling(sqrt), ceiling(length(subnetsresults)/sqrt)))
 for (j in 1:length(subnetsresults)){
   #cols <- brewer.pal(8,'Set2')[6:8]
@@ -657,7 +661,7 @@ names(xaxisvar)=xaxisvarnames
 jpeg("violin_winding_age.jpeg", units="in", width=20, height=10, res=300)  
 
 sqrt=sqrt(length(subnetsresults))
-if (sqrt>4) sqrt=4
+if (sqrt>3) sqrt=3
 par(mfrow = c(ceiling(sqrt), ceiling(length(subnetsresults)/sqrt)))
 for (j in 1:length(subnetsresults)){
   #cols <- brewer.pal(8,'Set2')[6:8]
