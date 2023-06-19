@@ -79,6 +79,8 @@ boot=boootcca(xlist=xlist,
               nsim=1000, alpha=0.05, samplesize=dim(xlist[[1]])[1] )
 
 
+
+
 boot$lowerconfcor
 boot$higherconfcor
 # boot$zstat
