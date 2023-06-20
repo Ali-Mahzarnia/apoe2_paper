@@ -31,6 +31,7 @@ Responsible for descriptive statistics on different behavioral probe data.
 
 Visualize 3D brain results.
 Compute the 95% bootstrap confidence interval after running "multicca.R".
+
 "multi_cca_volcano":
 
 Includes two folders, "apoe2_rna_sig_age" and "apoe2_rna_sig_sex".
