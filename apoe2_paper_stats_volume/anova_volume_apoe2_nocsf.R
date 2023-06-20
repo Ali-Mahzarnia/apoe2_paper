@@ -1,4 +1,4 @@
-path_vol="/Users/ali/Desktop/aug/apoe2_paper_stats_volume/individual_label_statistics/"
+path_vol="***/individual_label_statistics/"
 file_list=list.files(path_vol)
 
 whole_volume=matrix(NA,length(file_list),2)
@@ -18,7 +18,7 @@ whole_volume$V1=as.numeric(substr(whole_volume$V1,2,6)) # make dwi numeric
 
 
 library(readxl)
-path_master='/Users/ali/Desktop/aug/MasterSheet_Experiments2021.xlsx'
+path_master='****/MasterSheet_Experiments2021.xlsx'
 data=read_xlsx(path_master, sheet = '18ABB11_readable02.22.22_BJ_Cor' )
 datatemp=data%>%dplyr::select(DWI,Genotype,Weight, Sex, Diet, Age_Months)#subselect
 #nchar(datatemp[111,1])
@@ -72,5 +72,5 @@ sd(temp_bind$V2[temp_bind$age_cat==1])
    theme_bw()
 plot(p) 
 #dev.off()
-outpath='/Users/ali/Desktop/aug/apoe2_paper_stats_volume'
+outpath='***/apoe2_paper_stats_volume'
 ggsave(paste(outpath,'apoe22brainvol_nocsf.png',sep=''), plot = last_plot(), device='png', scale=1, width=4, height=4, unit=c("in"), dpi=200)
