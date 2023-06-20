@@ -1,4 +1,4 @@
-path_vol="/Users/ali/Desktop/aug/apoe2_paper_stats_volume/individual_label_statistics/"
+path_vol="***/individual_label_statistics/"
 file_list=list.files(path_vol)
 
 whole_volume=matrix(NA,length(file_list),2)
@@ -64,5 +64,5 @@ lm <- lm( V2 ~ as.factor(Age_Months)*as.factor(Sex),data=temp_bind )
    theme_bw()
 plot(p) 
 #dev.off()
-outpath='/Users/ali/Desktop/aug/apoe2_paper_stats_volume'
+outpath='***/apoe2_paper_stats_volume'
 ggsave(paste(outpath,'apoe22brainvol.png',sep=''), plot = last_plot(), device='png', scale=1, width=4, height=4, unit=c("in"), dpi=200)
